@@ -1,7 +1,3 @@
-<script setup>
-import ToDoList from './components/ToDoList.vue';
-</script>
-
 <template>
   <div class="wrapper">
     <header class="header">
@@ -18,22 +14,19 @@ import ToDoList from './components/ToDoList.vue';
             <h3 class="menu-title">Меню</h3>
             <ul class="menu-list">
               <li class="menu-item">
-                <a class="menu-link" href="./components/App.vue">Календарь</a>
-              </li>
-              <li class="menu-item">
-                <a class="menu-link" href="../html/list.html"
-                  >Завершенные задачи</a
+                <router-link class="menu-link" to="/calendar"
+                  >Календарь</router-link
                 >
               </li>
               <li class="menu-item">
-                <a class="menu-link" href="../html/list.html"
-                  >Предстоящие задачи</a
+                <router-link class="menu-link" to="/"
+                  >Предстоящие задачи</router-link
                 >
               </li>
             </ul>
           </nav>
         </section>
-        <ToDoList />
+        <router-view></router-view>
       </div>
     </main>
     <footer class="footer">
