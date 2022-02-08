@@ -2,32 +2,32 @@
   <div id="toDoList" style="display: contents">
     <section class="task">
       <h2>Задачи</h2>
-      <ul
-        class="todo-list"
-        v-for="(task, index) in notDoneTaskList"
-        :key="index"
-      >
-        <li class="todo-list-item">
-          <label>
-            <input
-              v-model="task.isDone"
-              class="todo-list-input"
-              type="checkbox"
-            />
-            <span>{{ task.name }}</span>
-            <button @click="deleteTask(task)" class="todo-list-button">
-              <img
-                class="todo-list-img"
-                src="../assets/delete.svg"
-                alt="delete"
+      <template v-if="notDoneTaskList.length">
+        <ul
+          class="todo-list"
+          v-for="(task, index) in notDoneTaskList"
+          :key="index"
+        >
+          <li class="todo-list-item">
+            <label>
+              <input
+                v-model="task.isDone"
+                class="todo-list-input"
+                type="checkbox"
               />
-            </button>
-          </label>
-        </li>
-      </ul>
-      <p v-if="isEmpty" class="empty-tasks">
-        Все задачи выполнены. Новых задач нет
-      </p>
+              <span>{{ task.name }}</span>
+              <button @click="deleteTask(task)" class="todo-list-button">
+                <img
+                  class="todo-list-img"
+                  src="../assets/delete.svg"
+                  alt="delete"
+                />
+              </button>
+            </label>
+          </li>
+        </ul>
+      </template>
+      <p v-else class="empty-tasks">Все задачи выполнены. Новых задач нет</p>
       <form @submit.prevent="addTask" class="add-form">
         <input
           v-model="taskName"
@@ -70,7 +70,6 @@ export default {
     return {
       taskName: '',
       taskList: [],
-      isEmpty: '',
     };
   },
 
@@ -212,9 +211,12 @@ h2:not(:last-child) {
   width: 100%;
   height: 100%;
 }
-
-p .empty-tasks {
+.empty-tasks {
   color: #69b253;
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .empty-tasks::before {
