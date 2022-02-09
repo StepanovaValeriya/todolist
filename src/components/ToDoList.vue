@@ -214,7 +214,6 @@ h2:not(:last-child) {
 .empty-tasks {
   color: #69b253;
   font-size: 20px;
-  text-align: center;
   margin-bottom: 15px;
   font-weight: 600;
 }

@@ -2,9 +2,7 @@
   <div class="wrapper">
     <header class="header">
       <div class="header-logo">
-        <a class="header-link" href="/макет 5 toDoList/html/index.html">
-          ToDoList
-        </a>
+        <router-link class="header-link" to="/"> ToDoList </router-link>
       </div>
     </header>
     <main class="page">
