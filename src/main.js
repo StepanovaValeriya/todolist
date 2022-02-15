@@ -7,7 +7,10 @@ import ToDoList from './components/ToDoList.vue';
 import Calendar from './components/Calendar.vue';
 
 const routes = [
-  { path: '/', component: ToDoList },
+  {
+    path: '/',
+    component: ToDoList,
+  },
   { path: '/calendar', component: Calendar },
 ];
 

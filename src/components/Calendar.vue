@@ -11,14 +11,18 @@
     </div>
     <div class="table">
       <div class="day" :key="day" v-for="day in days">{{ day }}</div>
-      <div
-        :class="{ other_month: isOtherMonth }"
+      <router-link
+        :class="{
+          current: date.getDate() === nowDate,
+          'other-month': date.getMonth() !== month,
+        }"
         class="date"
         :key="date"
         v-for="date in dates"
+        :to="{ path: '/', query: { date: date.toLocaleDateString() } }"
       >
         {{ date.getDate() }}
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -36,7 +40,7 @@ export default {
         'Суббота',
         'Воскресенье',
       ],
-      date: new Date(),
+      nowDate: new Date().getDate(),
       month: new Date().getMonth(),
       year: new Date().getFullYear(),
       monthList: [
@@ -69,12 +73,6 @@ export default {
         dates.push(new Date(this.year, this.month, start + i));
       }
       return dates;
-    },
-    otherMonthColor() {
-      if (new Date().getMonth() == this.month) {
-        this.isOtherMonth = true;
-        console.log(isOtherMonth);
-      }
     },
   },
 
@@ -148,5 +146,11 @@ h2 {
 .date:hover {
   background-color: rgb(44, 56, 90);
   transition: all 0.3s ease 0s;
+}
+.current {
+  background-color: green;
+}
+.other-month {
+  background-color: grey;
 }
 </style>

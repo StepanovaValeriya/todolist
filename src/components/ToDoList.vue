@@ -72,7 +72,6 @@ export default {
       taskList: [],
     };
   },
-
   created() {
     let taskList = localStorage.taskList;
     if (!taskList) return;
@@ -85,13 +84,31 @@ export default {
       },
       deep: true,
     },
+    '$route.query.date': {
+      handler(date) {
+        if (date) return;
+        this.$router.replace({
+          path: this.$route.path,
+          query: {
+            ...this.$route.query,
+            date: new Date().toLocaleDateString(),
+          },
+        });
+      },
+      immediate: true,
+    },
   },
   computed: {
     doneTaskList() {
-      return this.taskList.filter((task) => task.isDone);
+      return this.todayTaskList.filter((task) => task.isDone);
     },
     notDoneTaskList() {
-      return this.taskList.filter((task) => !task.isDone);
+      return this.todayTaskList.filter((task) => !task.isDone);
+    },
+    todayTaskList() {
+      return this.taskList.filter(
+        (task) => task.date === this.$route.query.date
+      );
     },
   },
   methods: {
@@ -99,6 +116,7 @@ export default {
       this.taskList.push({
         name: this.taskName,
         isDone: false,
+        date: this.$route.query.date,
       });
       this.taskName = '';
     },
