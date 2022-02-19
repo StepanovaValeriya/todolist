@@ -122,6 +122,7 @@ export default {
     },
     deleteTask(task) {
       let index = this.taskList.indexOf(task);
+      console.log(index);
       if (index === -1) return;
       this.taskList.splice(index, 1);
     },
