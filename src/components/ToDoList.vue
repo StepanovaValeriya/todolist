@@ -5,17 +5,65 @@
       <template v-if="notDoneTaskList.length">
         <ul
           class="todo-list"
-          v-for="(task, index) in notDoneTaskList"
+          v-for="(task, time, index) in notDoneTaskList"
           :key="index"
         >
           <li class="todo-list-item">
-            <label>
+            <div>
+              <img
+                v-if="task.isImportant"
+                class="todo-list-img important-icon"
+                src="../assets/flames.png"
+                alt="important"
+              />
+              <span @click="changeTime(task.time)" class="todo-list-time">{{
+                task.time
+              }}</span>
+
               <input
                 v-model="task.isDone"
                 class="todo-list-input"
                 type="checkbox"
               />
-              <span>{{ task.name }}</span>
+
+              <span
+                v-if="!task.editable"
+                @click="editTask(task)"
+                class="todo-list-task"
+                >{{ task.name }}</span
+              >
+              <input
+                v-else
+                class="todo-list-edit"
+                type="text"
+                v-model="task.name"
+                v-on:keyup.enter="task.editable = !task.editable"
+              />
+
+              <button class="todo-list-button">
+                <img
+                  v-if="!task.editable"
+                  @click="editTask(task)"
+                  class="todo-list-img"
+                  src="../assets/edit.png"
+                  alt="edit"
+                />
+                <img
+                  v-if="task.editable"
+                  @click="editTask(task)"
+                  class="todo-list-img"
+                  src="../assets/save.png"
+                  alt="save"
+                />
+              </button>
+              <button @click="importantTask(task)" class="todo-list-button">
+                <img
+                  class="todo-list-img"
+                  src="../assets/important.png"
+                  alt="important"
+                />
+              </button>
+
               <button @click="deleteTask(task)" class="todo-list-button">
                 <img
                   class="todo-list-img"
@@ -23,33 +71,57 @@
                   alt="delete"
                 />
               </button>
-            </label>
+            </div>
           </li>
         </ul>
       </template>
       <p v-else class="empty-tasks">Все задачи выполнены. Новых задач нет</p>
-      <form @submit.prevent="addTask" class="add-form">
+      <form class="add-form" @submit.prevent="submitHandler">
         <input
-          v-model="taskName"
+          v-model="v$.taskName.$model"
+          :class="{ invalid: v$.taskName.$error }"
           class="add-form-input"
           type="text"
           aria-label="Описание задачи"
-          required
+          placeholder="Введите задачу"
         />
-        <button class="add-form-button" type="submit">Добавить задачу</button>
+
+        <button
+          @click.prevent="selectTime"
+          class="add-form-button"
+          type="submit"
+        >
+          Выбрать время
+        </button>
+        <select
+          v-model="selectedTime"
+          v-if="isSelectVisible"
+          class="add-form-select"
+          name="time"
+          id="time"
+        >
+          <option :key="time" v-for="time in times" v-bind:value="time">
+            {{ time }}
+          </option>
+        </select>
+        <button @click="addTask" class="add-form-button" type="submit">
+          Добавить задачу
+        </button>
       </form>
     </section>
     <section class="ready">
       <h2>Выполненно</h2>
       <ul class="todo-list" v-for="(task, index) in doneTaskList" :key="index">
         <li class="todo-list-item">
-          <label>
+          <div>
+            <span class="todo-list-time">{{ task.time }}</span>
             <input
               v-model="task.isDone"
               class="todo-list-input"
               type="checkbox"
             />
-            <span>{{ task.name }}</span>
+            <span class="todo-list-task">{{ task.name }}</span>
+
             <button @click="deleteTask(task)" class="todo-list-button">
               <img
                 class="todo-list-img"
@@ -57,7 +129,7 @@
                 alt="delete"
               />
             </button>
-          </label>
+          </div>
         </li>
       </ul>
     </section>
@@ -65,11 +137,23 @@
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+const times = [];
+for (let i = 0; i <= 24; i++) {
+  times.push(i + ':00');
+}
 export default {
+  setup() {
+    return { v$: useVuelidate() };
+  },
   data() {
     return {
       taskName: '',
       taskList: [],
+      times,
+      isSelectVisible: false,
+      selectedTime: '0:00',
     };
   },
   created() {
@@ -105,26 +189,55 @@ export default {
     notDoneTaskList() {
       return this.todayTaskList.filter((task) => !task.isDone);
     },
+
     todayTaskList() {
       return this.taskList.filter(
         (task) => task.date === this.$route.query.date
       );
     },
   },
+  validations() {
+    return {
+      taskName: { required },
+    };
+  },
   methods: {
     addTask() {
       this.taskList.push({
         name: this.taskName,
         isDone: false,
+        time: this.selectedTime,
         date: this.$route.query.date,
+        isImportant: false,
+        editable: false,
       });
       this.taskName = '';
+      this.isSelectVisible = false;
+      this.selectedTime = '0:00';
     },
     deleteTask(task) {
       let index = this.taskList.indexOf(task);
-      console.log(index);
       if (index === -1) return;
       this.taskList.splice(index, 1);
+    },
+
+    selectTime() {
+      this.isSelectVisible = !this.isSelectVisible;
+    },
+    importantTask(task) {
+      task.isImportant = !task.isImportant;
+    },
+    editTask(task) {
+      task.editable = !task.editable;
+    },
+    changeTime(time) {
+      this.selectedTime = time;
+    },
+    submitHandler() {
+      if (this.v$.$invalid) {
+        this.v$.$touch();
+        return;
+      }
     },
   },
 };
@@ -135,7 +248,7 @@ export default {
   border-right: 2px solid var(--main-color-black);
   height: 100vh;
   align-self: flex-start;
-  padding: 40px 50px;
+  padding: 40px 0;
   flex: 0 1 40%;
 }
 .ready {
@@ -154,21 +267,21 @@ h2 {
   text-align: center;
   padding-left: 5px;
 }
+.invalid {
+  border: 1px solid red !important;
+}
 h2:not(:last-child) {
   margin-bottom: 40px;
 }
-.visually-hidden,
+
 .todo-list-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  border: 0;
-  clip: rect(0 0 0 0);
-  clip-path: inset(100%);
+  width: 16px;
+  height: 16px;
+  margin-right: 16px;
+  background-color: #ffffff;
+  border: 2px solid var(--main-color-black);
+  border-radius: 4px;
+  align-self: center;
 }
 
 .todo-list {
@@ -178,9 +291,10 @@ h2:not(:last-child) {
 
 .todo-list-item {
   margin-bottom: 12px;
+  position: relative;
 }
 
-.todo-list-item label {
+.todo-list-item div {
   display: flex;
   padding: 12px 18px;
   background-color: #ffffff;
@@ -190,38 +304,41 @@ h2:not(:last-child) {
   user-select: none;
 }
 
-.todo-list-item span {
+.todo-list-task {
   display: flex;
   align-items: center;
   flex: 1 1 auto;
+  width: 70%;
+  margin-right: 10px;
+  padding-left: 5px;
 }
-
-.todo-list-input + span::before {
-  content: '';
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin-right: 16px;
-  background-color: #ffffff;
-  border: 2px solid var(--main-color-black);
+.todo-list-edit {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  width: 70%;
+  border: 1px solid var(--main-color-black);
   border-radius: 4px;
+  margin-right: 10px;
+  padding-left: 5px;
+}
+.todo-list-time {
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  padding: 8px;
 }
 
-.todo-list-input:checked + span::before {
-  background-color: #69b253;
-  background-image: url('check-white.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.todo-list-input:not(:checked):hover + span::before,
-.todo-list-input:not(:checked):focus + span::before {
-  background-color: rgba(105, 178, 83, 0.2);
-}
 .todo-list-button {
-  width: 20px;
-  height: 20px;
+  width: 23px;
+  height: 23px;
   cursor: pointer;
+}
+.todo-list-button:not(:last-child) {
+  margin-right: 5px;
 }
 .todo-list-button:hover {
   box-shadow: 0px 4px 4px rgb(0 0 0 / 25%), 0px 4px 4px rgb(0 0 0 / 54%);
@@ -229,6 +346,10 @@ h2:not(:last-child) {
 .todo-list-img {
   width: 100%;
   height: 100%;
+}
+.important-icon {
+  width: 23px;
+  height: 23px;
 }
 .empty-tasks {
   color: #69b253;
@@ -250,6 +371,7 @@ h2:not(:last-child) {
 .add-form {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .add-form-input {
@@ -261,6 +383,9 @@ h2:not(:last-child) {
   font: inherit;
   border: 1px solid #a1b5c4;
   border-radius: 4px;
+}
+.add-form-input:not(:last-child) {
+  margin-bottom: 15px;
 }
 
 .add-form-input:focus {
@@ -288,7 +413,9 @@ h2:not(:last-child) {
   touch-action: manipulation;
   margin: 0 16px 0 16px;
 }
-
+.add-form-button:not(:last-child) {
+  margin-bottom: 15px;
+}
 .add-form-button:hover,
 .add-form-button:focus {
   outline: none;
@@ -298,6 +425,20 @@ h2:not(:last-child) {
 .add-form-button:active {
   background-color: #42862e;
 }
+.add-form-select {
+  flex-shrink: 0;
+  padding: 12px;
+  border: 1px solid var(--main-color-black);
+  border-radius: 4px;
+  margin: 0 16px 0 16px;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+}
+.add-form-select:not(:last-child) {
+  margin-bottom: 15px;
+}
+
 @media (max-width: 1250px) {
   .task,
   .ready {
@@ -309,9 +450,7 @@ h2:not(:last-child) {
   .add-form-input {
     flex: 0 1 100%;
   }
-  .add-form-input:not(:last-child) {
-    margin-bottom: 15px;
-  }
+
   .add-form-button {
     flex: 0 1 100%;
   }

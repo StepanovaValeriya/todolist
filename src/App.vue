@@ -5,78 +5,18 @@
         <router-link class="header-link" to="/"> ToDoList </router-link>
       </div>
     </header>
-    <main class="page">
-      <div class="container">
-        <section class="page-sidebar sidebar">
-          <nav class="sidebar-menu menu">
-            <h3 class="menu-title">Меню</h3>
-            <ul class="menu-list">
-              <li class="menu-item">
-                <router-link class="menu-link" to="/calendar"
-                  >Календарь</router-link
-                >
-              </li>
-              <li class="menu-item">
-                <router-link class="menu-link" to="/"
-                  >Предстоящие задачи</router-link
-                >
-              </li>
-            </ul>
-          </nav>
-        </section>
-        <router-view></router-view>
-      </div>
-    </main>
-    <footer class="footer">
-      <div class="footer-main">
-        <div class="footer-row">
-          <div class="footer-column">
-            <div class="footer-label">Company Info</div>
-            <nav class="footer-menu menu-footer">
-              <ul class="menu-footer-list">
-                <li class="menu-footer-item">
-                  <a class="menu-footer-link" href="#">About Us</a>
-                </li>
-                <li class="menu-footer-item">
-                  <a class="menu-footer-link" href="#">Carrier</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div class="footer-column">
-            <div class="footer-label">Legal</div>
-            <nav class="footer-menu menu-footer">
-              <ul class="menu-footer-list">
-                <li class="menu-footer-item">
-                  <a class="menu-footer-link" href="#">About Us</a>
-                </li>
-                <li class="menu-footer-item">
-                  <a class="menu-footer-link" href="#">Carrier</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div class="footer-column">
-            <div class="footer-label">Resources</div>
-            <nav class="footer-menu menu-footer">
-              <ul class="menu-footer-list">
-                <li class="menu-footer-item">
-                  <a class="menu-footer-link" href="#">IOS & Android</a>
-                </li>
-                <li class="menu-footer-item">
-                  <a class="menu-footer-link" href="#">Watch a Demo</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <Sidebar></Sidebar>
+
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
-export default {};
+import Footer from './components/Footer.vue';
+import Sidebar from './components/Sidebar.vue';
+export default {
+  components: { Footer, Sidebar },
+};
 </script>
 
 <style>
