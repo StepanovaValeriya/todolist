@@ -22,7 +22,7 @@ export default {
 <style>
 @media (max-width: 992px) {
 }
-@media (max-width: 1060px) {
+@media (max-width: 1250px) {
   .container {
     flex-direction: column;
   }
@@ -40,6 +40,11 @@ export default {
   }
   .menu-title {
     display: none;
+  }
+}
+@media (max-width: 510px) {
+  .header-link {
+    font-size: 56px;
   }
 }
 </style>

@@ -16,9 +16,23 @@
                 src="../assets/flames.png"
                 alt="important"
               />
-              <span @click="changeTime(task.time)" class="todo-list-time">{{
-                task.time
-              }}</span>
+              <span
+                v-if="!task.editable"
+                @click="editTask(task)"
+                class="todo-list-time"
+                >{{ task.time }}</span
+              >
+              <select
+                v-model="task.time"
+                v-else
+                class="todo-list-select"
+                name="time"
+                id="time"
+              >
+                <option :key="time" v-for="time in times" v-bind:value="time">
+                  {{ time }}
+                </option>
+              </select>
 
               <input
                 v-model="task.isDone"
@@ -30,7 +44,8 @@
                 v-if="!task.editable"
                 @click="editTask(task)"
                 class="todo-list-task"
-                >{{ task.name }}</span
+                :class="{ empty: !task.name }"
+                >{{ task.name ? task.name : 'Введите задачу' }}</span
               >
               <input
                 v-else
@@ -42,18 +57,18 @@
 
               <button class="todo-list-button">
                 <img
-                  v-if="!task.editable"
-                  @click="editTask(task)"
-                  class="todo-list-img"
-                  src="../assets/edit.png"
-                  alt="edit"
-                />
-                <img
                   v-if="task.editable"
                   @click="editTask(task)"
                   class="todo-list-img"
                   src="../assets/save.png"
                   alt="save"
+                />
+                <img
+                  v-else-if="!task.editable"
+                  @click="editTask(task)"
+                  class="todo-list-img"
+                  src="../assets/edit.png"
+                  alt="edit"
                 />
               </button>
               <button @click="importantTask(task)" class="todo-list-button">
@@ -76,10 +91,9 @@
         </ul>
       </template>
       <p v-else class="empty-tasks">Все задачи выполнены. Новых задач нет</p>
-      <form class="add-form" @submit.prevent="submitHandler">
+      <form class="add-form">
         <input
-          v-model="v$.taskName.$model"
-          :class="{ invalid: v$.taskName.$error }"
+          v-model="taskName"
           class="add-form-input"
           type="text"
           aria-label="Описание задачи"
@@ -140,8 +154,12 @@
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 const times = [];
-for (let i = 0; i <= 24; i++) {
-  times.push(i + ':00');
+for (let i = 0; i <= 23; i++) {
+  if (i < 10) {
+    times.push('0' + i + ':00');
+  } else {
+    times.push(i + ':00');
+  }
 }
 export default {
   setup() {
@@ -153,7 +171,7 @@ export default {
       taskList: [],
       times,
       isSelectVisible: false,
-      selectedTime: '0:00',
+      selectedTime: '00:00',
     };
   },
   created() {
@@ -195,6 +213,17 @@ export default {
         (task) => task.date === this.$route.query.date
       );
     },
+    sortedList() {
+      return this.taskList.sort(function (a, b) {
+        if (a.time > b.time) {
+          return 1;
+        }
+        if (a.time < b.time) {
+          return -1;
+        }
+        return 0;
+      });
+    },
   },
   validations() {
     return {
@@ -230,15 +259,6 @@ export default {
     editTask(task) {
       task.editable = !task.editable;
     },
-    changeTime(time) {
-      this.selectedTime = time;
-    },
-    submitHandler() {
-      if (this.v$.$invalid) {
-        this.v$.$touch();
-        return;
-      }
-    },
   },
 };
 </script>
@@ -267,8 +287,8 @@ h2 {
   text-align: center;
   padding-left: 5px;
 }
-.invalid {
-  border: 1px solid red !important;
+.empty {
+  color: #a1b5c4;
 }
 h2:not(:last-child) {
   margin-bottom: 40px;
@@ -331,12 +351,17 @@ h2:not(:last-child) {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   padding: 8px;
 }
-
-.todo-list-button {
-  width: 23px;
-  height: 23px;
-  cursor: pointer;
+.todo-list-select {
+  flex-shrink: 0;
+  padding: 5px;
+  border: 1px solid var(--main-color-black);
+  border-radius: 4px;
+  margin: 0 16px 0 0px;
+  font-weight: 500;
+  font-size: 14px;
+  text-align: center;
 }
+
 .todo-list-button:not(:last-child) {
   margin-right: 5px;
 }
@@ -344,8 +369,9 @@ h2:not(:last-child) {
   box-shadow: 0px 4px 4px rgb(0 0 0 / 25%), 0px 4px 4px rgb(0 0 0 / 54%);
 }
 .todo-list-img {
-  width: 100%;
-  height: 100%;
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
 }
 .important-icon {
   width: 23px;
@@ -442,10 +468,11 @@ h2:not(:last-child) {
 @media (max-width: 1250px) {
   .task,
   .ready {
-    align-self: flex-start;
-    flex: 0 1 35%;
-    padding: 40px 0px;
+    padding-top: 0;
+    flex: 0 1 100%;
     width: 100%;
+    align-self: center;
+    border: none;
   }
   .add-form-input {
     flex: 0 1 100%;
@@ -455,38 +482,9 @@ h2:not(:last-child) {
     flex: 0 1 100%;
   }
 }
-
-@media (max-width: 1060px) {
-  .container {
-    flex-direction: column;
-  }
-  .sidebar {
-    min-height: 100%;
-  }
-  .menu {
-    width: 100%;
-  }
-  .menu-list {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-  .menu-title {
-    display: none;
-  }
-  .task,
-  .ready {
-    padding-top: 0;
-    flex: 0 1 100%;
-    width: 100%;
-    align-self: center;
-    border: none;
-  }
-}
-@media (max-width: 420px) {
+@media (max-width: 510px) {
   .header-link {
-    font-size: 56px;
+    font-size: 46px;
   }
   h2 {
     font-size: 36px;

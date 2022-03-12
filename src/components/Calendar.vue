@@ -120,10 +120,10 @@ h2 {
 .table {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 100px;
+  grid-auto-columns: 100px;
   background-color: rgb(101, 122, 182);
   border: 1px solid #fff;
-  min-width: 700px;
-  min-height: 700px;
 }
 
 .day,
@@ -152,5 +152,32 @@ h2 {
 }
 .other-month {
   background-color: grey;
+}
+@media (max-width: 1350px) {
+  .table {
+    grid-template-columns: repeat(7, 100px);
+  }
+  .day,
+  .date {
+    font-size: 12px;
+  }
+}
+@media (max-width: 732px) {
+  .table {
+    grid-template-columns: repeat(7, 70px);
+    grid-template-rows: repeat(7, 70px);
+  }
+  .day {
+    font-size: 8px;
+  }
+}
+@media (max-width: 732px) {
+  .table {
+    grid-template-columns: repeat(7, 50px);
+    grid-template-rows: repeat(7, 45px);
+  }
+  .day {
+    font-size: 8px;
+  }
 }
 </style>
