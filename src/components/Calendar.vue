@@ -2,11 +2,11 @@
   <div id="calendar">
     <div class="calendar-header">
       <button @click="monthAgo" class="calendar-arrow arrow-left">
-        <img src="../assets/arrow left.svg" alt="arrow left" />
+        <img src="../assets/arrowLeft.svg" alt="arrow left" />
       </button>
       <h2 class="data">{{ monthList[month] }} {{ year }}</h2>
       <button @click="monthAHead" class="calendar-arrow arrow-right">
-        <img src="../assets/arrow right.svg" alt="arrow right" />
+        <img src="../assets/arrowRight.svg" alt="arrow right" />
       </button>
     </div>
     <div class="table">

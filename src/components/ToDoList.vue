@@ -490,4 +490,9 @@ h2:not(:last-child) {
     font-size: 36px;
   }
 }
+@media (max-width: 450px) {
+  .empty-tasks {
+    text-align: center;
+  }
+}
 </style>
