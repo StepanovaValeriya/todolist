@@ -1,7 +1,15 @@
-# Vue 3 + Vite
+# ToDoList
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is an educational project. The main task was to learn the VueJS framework. Implemented the ability to select a date from the calendar, sort tasks by time, view already completed tasks, it is possible to edit the task text and time.
 
-## Recommended IDE Setup
+## Getting Started
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+To run the project сlone it to your local machine and run it with the commands
+
+```
+npm install
+```
+```
+npm run preview
+```
+
