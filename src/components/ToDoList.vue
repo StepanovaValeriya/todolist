@@ -91,37 +91,12 @@
         </ul>
       </template>
       <p v-else class="empty-tasks">Все задачи выполнены. Новых задач нет</p>
-      <form class="add-form">
-        <input
-          v-model="taskName"
-          class="add-form-input"
-          type="text"
-          aria-label="Описание задачи"
-          placeholder="Введите задачу"
-        />
-
-        <button
-          @click.prevent="selectTime"
-          class="add-form-button"
-          type="submit"
-        >
-          Выбрать время
-        </button>
-        <select
-          v-model="selectedTime"
-          v-if="isSelectVisible"
-          class="add-form-select"
-          name="time"
-          id="time"
-        >
-          <option :key="time" v-for="time in times" v-bind:value="time">
-            {{ time }}
-          </option>
-        </select>
-        <button @click="addTask" class="add-form-button" type="submit">
-          Добавить задачу
-        </button>
-      </form>
+      <AddForm
+        :taskName="taskName"
+        v-on:newTask="addTaskName"
+        :times="times"
+        :addTask="addTask"
+      ></AddForm>
     </section>
     <Ready :doneTaskList="doneTaskList" :deleteTask="deleteTask"></Ready>
   </div>
@@ -129,6 +104,7 @@
 
 <script>
 import Ready from './Ready.vue';
+import AddForm from './AddForm.vue';
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 const times = [];
@@ -148,7 +124,6 @@ export default {
       taskName: '',
       taskList: [],
       times,
-      isSelectVisible: false,
       selectedTime: '00:00',
     };
   },
@@ -209,6 +184,9 @@ export default {
     };
   },
   methods: {
+    addTaskName(value) {
+      this.taskName = value;
+    },
     addTask() {
       this.taskList.push({
         name: this.taskName,
@@ -228,9 +206,6 @@ export default {
       this.taskList.splice(index, 1);
     },
 
-    selectTime() {
-      this.isSelectVisible = !this.isSelectVisible;
-    },
     importantTask(task) {
       task.isImportant = !task.isImportant;
     },
@@ -238,7 +213,7 @@ export default {
       task.editable = !task.editable;
     },
   },
-  components: { Ready },
+  components: { Ready, AddForm },
 };
 </script>
 
