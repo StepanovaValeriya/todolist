@@ -94,6 +94,8 @@
       <AddForm
         :taskName="taskName"
         v-on:newTask="addTaskName"
+        :selectedTime="selectedTime"
+        v-on:time="addTime"
         :times="times"
         :addTask="addTask"
       ></AddForm>
@@ -204,6 +206,9 @@ export default {
       let index = this.taskList.indexOf(task);
       if (index === -1) return;
       this.taskList.splice(index, 1);
+    },
+    addTime(value) {
+      this.selectedTime = value;
     },
 
     importantTask(task) {
@@ -420,13 +425,15 @@ h2:not(:last-child) {
 }
 
 @media (max-width: 1250px) {
-  .task,
-  .ready {
+  .task {
     padding-top: 0;
     flex: 0 1 100%;
     width: 100%;
     align-self: center;
     border: none;
+  }
+  .ready {
+    display: none;
   }
   .add-form-input {
     flex: 0 1 100%;

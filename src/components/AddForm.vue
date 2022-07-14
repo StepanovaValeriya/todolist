@@ -13,7 +13,8 @@
       Выбрать время
     </button>
     <select
-      v-model="selectedTime"
+      v-model="time"
+      v-on:input="addTime"
       v-if="isSelectVisible"
       class="add-form-select"
       name="time"
@@ -33,6 +34,7 @@
 export default {
   props: {
     taskName: String,
+    selectedTime: String,
     times: Array,
     addTask: Function,
   },
@@ -40,11 +42,16 @@ export default {
     return {
       isSelectVisible: false,
       taskText: this.taskName,
+      time: this.selectedTime,
     };
   },
   methods: {
     addTaskText() {
       this.$emit('newTask', this.taskText);
+    },
+    addTime() {
+      this.$emit('time', this.time);
+      console.log(this.time);
     },
     selectTime() {
       this.isSelectVisible = !this.isSelectVisible;
