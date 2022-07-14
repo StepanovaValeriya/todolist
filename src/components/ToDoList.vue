@@ -123,34 +123,12 @@
         </button>
       </form>
     </section>
-    <section class="ready">
-      <h2>Выполненно</h2>
-      <ul class="todo-list" v-for="(task, index) in doneTaskList" :key="index">
-        <li class="todo-list-item">
-          <div>
-            <span class="todo-list-time">{{ task.time }}</span>
-            <input
-              v-model="task.isDone"
-              class="todo-list-input"
-              type="checkbox"
-            />
-            <span class="todo-list-task">{{ task.name }}</span>
-
-            <button @click="deleteTask(task)" class="todo-list-button">
-              <img
-                class="todo-list-img"
-                src="../assets/delete.svg"
-                alt="delete"
-              />
-            </button>
-          </div>
-        </li>
-      </ul>
-    </section>
+    <Ready :doneTaskList="doneTaskList" :deleteTask="deleteTask"></Ready>
   </div>
 </template>
 
 <script>
+import Ready from './Ready.vue';
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 const times = [];
@@ -260,10 +238,11 @@ export default {
       task.editable = !task.editable;
     },
   },
+  components: { Ready },
 };
 </script>
 
-<style scoped>
+<style>
 .task {
   border-right: 2px solid var(--main-color-black);
   height: 100vh;
