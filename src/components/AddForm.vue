@@ -14,7 +14,7 @@
     </button>
     <select
       v-model="time"
-      v-on:input="addTime"
+      v-on:input="addTime($event)"
       v-if="isSelectVisible"
       class="add-form-select"
       name="time"
@@ -49,9 +49,9 @@ export default {
     addTaskText() {
       this.$emit('newTask', this.taskText);
     },
-    addTime() {
-      this.$emit('time', this.time);
-      console.log(this.time);
+    addTime(event) {
+      this.$emit('time', event.target.value);
+      console.log(event.target.value);
     },
     selectTime() {
       this.isSelectVisible = !this.isSelectVisible;

@@ -87,6 +87,15 @@ body {
 .menu-item {
   margin: 0 0 20px 0;
 }
+.hidden {
+  display: none;
+}
+@media (max-width: 1250px) {
+  .hidden {
+    display: block;
+  }
+}
+
 .menu-link {
   color: #fff;
   font-size: 14px;
