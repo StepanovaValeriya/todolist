@@ -425,7 +425,8 @@ h2:not(:last-child) {
 }
 
 @media (max-width: 1250px) {
-  .task {
+  .task,
+  .ready {
     padding-top: 0;
     flex: 0 1 100%;
     width: 100%;
@@ -433,8 +434,9 @@ h2:not(:last-child) {
     border: none;
   }
   .ready {
-    display: none;
+    padding: 40px 0 50px 0;
   }
+
   .add-form-input {
     flex: 0 1 100%;
   }

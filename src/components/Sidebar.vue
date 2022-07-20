@@ -19,9 +19,6 @@
                 }}</a>
               </li>
             </router-link>
-            <li class="menu-item hidden">
-              <router-link to="/ready" class="menu-link">Выполнено</router-link>
-            </li>
           </ul>
         </nav>
       </section>

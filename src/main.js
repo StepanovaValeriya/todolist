@@ -5,7 +5,6 @@ import './styles/main.css';
 import App from './App.vue';
 import ToDoList from './components/ToDoList.vue';
 import Calendar from './components/Calendar.vue';
-import Ready from './components/Ready.vue';
 
 const routes = [
   {
@@ -13,7 +12,6 @@ const routes = [
     component: ToDoList,
   },
   { path: '/calendar', component: Calendar },
-  { path: '/ready', component: Ready },
 ];
 
 const router = createRouter({
