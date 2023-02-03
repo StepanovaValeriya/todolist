@@ -17,14 +17,12 @@
 - Vite
 
 
-## Getting Started
-
-To run the project сlone it to your local machine and run it with the commands
+## Сборка и запуск
 
 ```
-npm install
+npm install -  установка
 ```
 ```
-npm run build
+npm run build - для сборки
 ```
 
